@@ -1,0 +1,7 @@
+name = "VisdomLog"
+uuid = "b9b00f16-b148-11e8-1d80-65f62d8fa156"
+authors = ["Sam Anklesaria <ankle@mit.edu>"]
+version = "0.1.0"
+
+[deps]
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
