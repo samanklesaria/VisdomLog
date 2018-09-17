@@ -1,3 +1,4 @@
+__precompile__(false) 
 module VisdomLog
 export Visdom, report, inform
 using PyCall
