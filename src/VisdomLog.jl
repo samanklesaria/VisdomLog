@@ -27,6 +27,7 @@ function report(l, k::Symbol, y)
 end
 
 function inform(l, k::Symbol, vals)
+  valsCollapsed = (vals[:])::Vector{Float64}
   if !haskey(l.d, k)
     win = l.vis[:histogram](X=vals[:], opts=Dict(:title=>String(k)))
     l.d[k] = win=>nothing;
