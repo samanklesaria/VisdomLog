@@ -1,6 +1,6 @@
 __precompile__(false) 
 module VisdomLog
-export Visdom, report, inform
+export Visdom, report
 using PyCall
 @pyimport visdom
 @pyimport numpy as np
@@ -15,7 +15,7 @@ function Visdom(env::String)
   Visdom(vd, Dict{Symbol, Pair{PyObject,Any}}())
 end
     
-function report(l, k::Symbol, y)
+function report(l, k::Symbol, y::Float64)
   if !haskey(l.d, k)
     win = l.vis[:line](X=[1], Y=[y], opts=Dict(:title=>String(k)))
     l.d[k] = (win => 2);
@@ -26,14 +26,13 @@ function report(l, k::Symbol, y)
   end
 end
 
-function inform(l, k::Symbol, vals)
-  valsCollapsed = (vals[:])::Vector{Float64}
+function report(l, k::Symbol, vals::Array{Float64})
   if !haskey(l.d, k)
     win = l.vis[:histogram](X=vals[:], opts=Dict(:title=>String(k)))
     l.d[k] = win=>nothing;
   else
     (win, _) = l.d[k]
-    l.vis[:histogram](win=win, X=vals[:], opts=Dict("ytype"=>"log"));
+    l.vis[:histogram](win=win, X=vals[:], opts=Dict("ytype"=>"log", :title=>String(k)));
   end
 end
 end
