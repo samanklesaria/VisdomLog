@@ -14,7 +14,9 @@ function Visdom(env::String)
   vd = visdom[:Visdom](env=env)
   Visdom(vd, Dict{Symbol, Pair{PyObject,Any}}())
 end
-    
+
+# ABSTRACT this pattern!
+
 "Add a value to a log of results"
 function report(l, k::Symbol, y::Float64)
   if !haskey(l.d, k)
@@ -39,7 +41,7 @@ function report(l, k::Symbol, vals::Array{Float64})
 end
 
 "Plot a comparison of current results"
-function report(l, k::Symbol, xs::Vector, ys::Matrix{Float64}, legend::Vector)
+function report(l, k::Symbol, (xs, ys, legend)::Tuple{Vector,Matrix{Float64},Vector})
   if !haskey(l.d, k)
     win = l.vis[:line](X=xs, Y=ys, opts=Dict(:legend=>legend, :title=>String(k)))
     l.d[k] = win=>nothing;
@@ -47,6 +49,18 @@ function report(l, k::Symbol, xs::Vector, ys::Matrix{Float64}, legend::Vector)
     (win, _) = l.d[k]
     l.vis[:line](win=win, X=xs, Y=ys, update="replace",
       opts=Dict(:legend=>legend, :title=>String(k)));
+  end
+end
+
+"Plot a comparison of current results"
+function report(l, k::Symbol, (xs, ys)::Tuple{Vector,Vector{Float64}})
+  if !haskey(l.d, k)
+    win = l.vis[:line](X=xs, Y=ys, opts=Dict(:title=>String(k)))
+    l.d[k] = win=>nothing;
+  else
+    (win, _) = l.d[k]
+    l.vis[:line](win=win, X=xs, Y=ys, update="replace",
+      opts=Dict(:title=>String(k)));
   end
 end
 
