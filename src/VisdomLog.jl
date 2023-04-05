@@ -23,13 +23,14 @@ function save(vd::Visdom, envs)
 end
 
 "Add a value to a log of results"
-function report(l, k, x::Number, y::Number; log=true)
+function report(l, k, x::Number, y::Number; log=true, scatter=false)
   ytype = log ? "log" : "linear"
   kstr = pathstr(k)
-  l.vis[:line](win=kstr, X=[x], Y=[y], update="append",
-    opts=Dict(:ytype=>ytype, :title=>kstr))
+  f = scatter ? l.vis[:scatter] : l.vis[:line]
+  f(win=kstr, X=[x], Y=[y], update="append",
+      opts=Dict(:ytype=>ytype, :title=>kstr))
 end
-
+              
 "Display a histogram of current results"
 function report(l, k, vals::AbstractArray{<: Number})
   kstr = pathstr(k)
